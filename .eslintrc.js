@@ -7,6 +7,9 @@ module.exports = {
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
+    'prettier',
+    'airbnb-base',
+    'airbnb-typescript/base',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
@@ -21,5 +24,26 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    'import/prefer-default-export': 'off',
+    'object-curly-newline': 'off',
+    'linebreak-style': 'off',
+    'import/no-cycle': 'off',
+    'arrow-body-style': 'off',
+    '@typescript-eslint/no-useless-constructor': 'off',
+    '@typescript-eslint/indent': ['off'],
+    'class-methods-use-this': ['off'],
+    '@typescript-eslint/explicit-function-return-type': [
+      'error',
+      {
+        'allowExpressions': true,
+        'allowDirectConstAssertionInArrowFunctions': true,
+        'allowConciseArrowFunctionExpressionsStartingWithVoid': true
+      }
+    ],
+    'max-classes-per-file': 'off',
+    'operator-linebreak': 'off',
+    'implicit-arrow-linebreak': 'off',
+    'newline-per-chained-call': 'off',
+    'no-param-reassign': 0
   },
 };
