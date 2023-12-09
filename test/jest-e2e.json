@@ -1,9 +1,20 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "collectCoverageFrom": [
+    "**/src/**/*.{js,ts}",
+    "!**/src/main.ts",
+    "!**/src/*.spec.ts",
+    "!**/node_modules/**",
+    "!**/vendor/**"
+  ],
+  "rootDir": "../",
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testRegex": ".e2e.spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.(t|j)sx?$": "@swc/jest"
+  },
+  "roots": ["<rootDir>/"],
+  "moduleNameMapper": {
+    "^@services(.*)$": "<rootDir>/src/services/$1"
   }
 }
