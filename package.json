@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "prisma generate",
-    "build": "nest build",
+    "build": "nest build || node dist/main",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "prestart": "prisma migrate deploy",
     "start": "nest start",
