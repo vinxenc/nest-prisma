@@ -30,6 +30,8 @@
     "@nestjs/swagger": "7.1.16",
     "@nestjs/terminus": "10.2.0",
     "@prisma/client": "^5.7.0",
+    "dotenv": "^16.3.1",
+    "envalid": "^8.0.0",
     "module-alias": "^2.2.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
@@ -67,7 +69,8 @@
     "typescript": "^5.1.3"
   },
   "_moduleAliases": {
-    "@services"      : "src/modules"
+    "@services": "src/modules",
+    "@common": "src/common"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -86,9 +89,12 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-    "roots": ["<rootDir>/"],
+    "roots": [
+      "<rootDir>/"
+    ],
     "moduleNameMapper": {
-      "^@services(.*)$": "<rootDir>/services/$1"
+      "^@services(.*)$": "<rootDir>/services/$1",
+      "^@common(.*)$": "<rootDir>/src/common/$1"
     }
   }
 }
