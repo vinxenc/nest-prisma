@@ -7,6 +7,12 @@ on:
   pull_request:
     branches: [ "develop" ]
 
+env:
+  PORT: 3000
+  NODE_ENV: test
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?shema=public
+  JWT_SECRET_KEY: dev-jwt-secret-key
+
 jobs:
   build:
 
@@ -26,4 +32,11 @@ jobs:
         cache: 'yarn'
     - run: yarn install --immutable --immutable-cache --check-cache
     - run: yarn run build
-    - run: yarn run test:cov
+
+    - name: Test Coverage
+      run: yarn run test:cov
+      env:
+        PORT: ${{ env.PORT }}
+        NODE_ENV: ${{ env.NODE_ENV }}
+        DATABASE_URL: ${{ env.DATABASE_URL }}
+        JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
