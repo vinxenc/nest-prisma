@@ -8,13 +8,16 @@ import {
   BadRequestException,
   NotFoundException,
   Get,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { PrismaService } from '@services';
 import { plainToClass } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
+import { Public } from '@common';
 import { SignInBody, SignInRes, SignUpBody, SignUpRes } from './auth.dto';
-import { Public, expiresIn, saltRounds } from './auth.constant';
-import { JwtAuthGuard } from './jwt/jwt-auth.guard';
+import { expiresIn, saltRounds } from './auth.constant';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -23,8 +26,9 @@ export class AuthController {
     private jwtService: JwtService,
   ) {}
 
-  @Post('/sign-in')
   @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('/sign-in')
   async signIn(@Body() body: SignInBody): Promise<SignInRes> {
     const { username } = body;
     const user = await this.prismaService.user.findUnique({
@@ -41,8 +45,8 @@ export class AuthController {
     return plainToClass(SignInRes, { ...user, accessToken, expiresIn });
   }
 
-  @Post('/sign-up')
   @Public()
+  @Post('/sign-up')
   async signUp(@Body() body: SignUpBody): Promise<SignUpRes> {
     const { username, password, email } = body;
     const existedUser = await this.prismaService.user.findFirst({
