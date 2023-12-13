@@ -1,3 +1,4 @@
+import { Public } from '@common';
 import { Controller, Get } from '@nestjs/common';
 import {
   HealthCheck,
@@ -6,7 +7,6 @@ import {
   PrismaHealthIndicator,
 } from '@nestjs/terminus';
 import { PrismaService } from '@services';
-import { Public } from '../auth/auth.constant';
 
 @Controller('healthz')
 export class HealthzController {
@@ -16,8 +16,8 @@ export class HealthzController {
     private readonly prismaHealthIndicator: PrismaHealthIndicator,
   ) {}
 
-  @Get()
   @Public()
+  @Get()
   @HealthCheck()
   check(): Promise<HealthCheckResult> {
     return this.health.check([

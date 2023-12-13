@@ -7,6 +7,10 @@ import { AppModule } from '../../../src/app.module';
 describe('HealthzController (e2e)', () => {
   let app: INestApplication;
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],

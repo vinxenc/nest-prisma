@@ -1,16 +1,20 @@
+import { STRING_LENGTH_55 } from '@common';
 import { Exclude } from 'class-transformer';
-import { IsString, MaxLength, IsEmail } from 'class-validator';
+import { IsString, MaxLength, IsEmail, IsNotEmpty } from 'class-validator';
 
 export class SignUpBody {
+  @IsNotEmpty()
   @IsString()
-  @MaxLength(55)
+  @MaxLength(STRING_LENGTH_55)
   username!: string;
 
+  @IsNotEmpty()
   @IsString()
-  @MaxLength(55)
+  @MaxLength(STRING_LENGTH_55)
   @IsEmail()
   email!: string;
 
+  @IsNotEmpty()
   @IsString()
   password!: string;
 }
@@ -26,10 +30,12 @@ export class SignUpRes extends SignUpBody {
 }
 
 export class SignInBody {
+  @IsNotEmpty()
   @IsString()
-  @MaxLength(55)
+  @MaxLength(STRING_LENGTH_55)
   username!: string;
 
+  @IsNotEmpty()
   @IsString()
   password!: string;
 }
