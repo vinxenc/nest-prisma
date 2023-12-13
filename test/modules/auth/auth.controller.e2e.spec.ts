@@ -1,12 +1,12 @@
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
-import { HttpStatus, INestApplication, ValidationPipe } from "@nestjs/common";
-import { Test, TestingModule } from "@nestjs/testing";
-import { AuthModule } from "../../../src/modules/auth/auth.module";
-import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
-import { PrismaService } from "@services";
-import { APP_GUARD } from "@nestjs/core";
-import { JwtAuthGuard } from "@common";
+import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { PrismaService } from '@services';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from '@common';
+import { AuthModule } from '../../../src/modules/auth/auth.module';
 import { expiresIn } from '../../../src/modules/auth/auth.constant';
 
 describe('AuthController', () => {
@@ -38,22 +38,20 @@ describe('AuthController', () => {
   });
 
   afterEach(async () => {
-    await prismaService.user.deleteMany({ where: { id: { gt: 0 } }});
+    await prismaService.user.deleteMany({ where: { id: { gt: 0 } } });
   });
 
   describe('/auth/sign-up (POST)', () => {
     it('should failed Bad Request: password should not be empty', async () => {
-      const { status, body } = await request(app.getHttpServer())
-        .post('/auth/sign-up')
-        .send({
-          username: faker.person.middleName(),
-          email: faker.internet.email(),
-        });
+      const { status, body } = await request(app.getHttpServer()).post('/auth/sign-up').send({
+        username: faker.person.middleName(),
+        email: faker.internet.email(),
+      });
 
       expect(status).toBe(HttpStatus.BAD_REQUEST);
       expect(body).toEqual({
         error: 'Bad Request',
-        message: ["password must be a string", 'password should not be empty'],
+        message: ['password must be a string', 'password should not be empty'],
         statusCode: HttpStatus.BAD_REQUEST,
       });
     });
@@ -65,9 +63,7 @@ describe('AuthController', () => {
         password: faker.internet.password(),
       };
 
-      await request(app.getHttpServer())
-        .post('/auth/sign-up')
-        .send(bodyReq);
+      await request(app.getHttpServer()).post('/auth/sign-up').send(bodyReq);
 
       const { status, body } = await request(app.getHttpServer())
         .post('/auth/sign-up')
@@ -97,21 +93,19 @@ describe('AuthController', () => {
         id: expect.any(Number),
         username: bodyReq.username,
       });
-    })
+    });
   });
 
   describe('/auth/sign-in (POST)', () => {
     it('should failed Bad Request: password should not be empty', async () => {
-      const { status, body } = await request(app.getHttpServer())
-        .post('/auth/sign-in')
-        .send({
-          username: faker.person.middleName(),
-        });
+      const { status, body } = await request(app.getHttpServer()).post('/auth/sign-in').send({
+        username: faker.person.middleName(),
+      });
 
       expect(status).toBe(HttpStatus.BAD_REQUEST);
       expect(body).toEqual({
         error: 'Bad Request',
-        message: ["password must be a string", 'password should not be empty'],
+        message: ['password must be a string', 'password should not be empty'],
         statusCode: HttpStatus.BAD_REQUEST,
       });
     });
@@ -160,13 +154,12 @@ describe('AuthController', () => {
 
   describe('/auth/profile (GET)', () => {
     it('should failed Unauthorized: ', async () => {
-      const { status, body } = await request(app.getHttpServer())
-        .get('/auth/profile');
+      const { status, body } = await request(app.getHttpServer()).get('/auth/profile');
 
       expect(status).toBe(HttpStatus.UNAUTHORIZED);
       expect(body).toEqual({
-        message: "Unauthorized",
-        statusCode: HttpStatus.UNAUTHORIZED
+        message: 'Unauthorized',
+        statusCode: HttpStatus.UNAUTHORIZED,
       });
     });
 
@@ -201,7 +194,7 @@ describe('AuthController', () => {
       expect(response.body).toEqual({
         id: body.id,
         username: bodyReq.username,
-      })
-    })
+      });
+    });
   });
 });

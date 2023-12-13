@@ -14,10 +14,10 @@ import {
 import { PrismaService } from '@services';
 import { plainToClass } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
+import { Public } from '@common';
 import { SignInBody, SignInRes, SignUpBody, SignUpRes } from './auth.dto';
 import { expiresIn, saltRounds } from './auth.constant';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { Public } from '@common';
 
 @Controller('auth')
 export class AuthController {
