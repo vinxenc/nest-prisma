@@ -6,16 +6,16 @@ import { PrismaClient } from '@prisma/client';
 import { mockDeep } from 'jest-mock-extended';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { INestApplication } from '@nestjs/common';
-import { AppModule } from '../app.module';
+import { HealthzModule } from '../modules/healthz/healthz.module';
 
 describe('HealthzController', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [HealthzModule],
       controllers: [],
-      providers: [PrismaService],
+      providers: [],
     })
       .overrideProvider(PrismaService)
       .useValue(mockDeep<PrismaClient>())
@@ -24,6 +24,10 @@ describe('HealthzController', () => {
     app = testModule.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
+  });
+
+  afterAll(async () => {
+    app.close();
   });
 
   describe('/healthz (GET)', () => {

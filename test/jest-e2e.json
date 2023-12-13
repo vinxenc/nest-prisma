@@ -2,6 +2,7 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "collectCoverageFrom": [
     "**/src/**/*.{js,ts}",
+    "!**/src/**/__tests__/**/*.{js,ts}",
     "!**/src/main.ts",
     "!**/src/*.spec.ts",
     "!**/node_modules/**",
