@@ -13,7 +13,7 @@ ENV NODE_ENV production
 
 RUN yarn install --production
 
-FROM ubuntu:22.04 As production
+FROM node:20-slim As production
 
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/package.json ./package.json
