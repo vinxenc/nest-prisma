@@ -4,13 +4,12 @@ import { AllExceptionFilter } from '@common';
 import { HealthzModule } from './modules/healthz/healthz.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
-import { ObserveLogger } from './plugins/logger';
+import { LoggerModule } from './modules/logger/logger.module';
 
 @Module({
-  imports: [HealthzModule, AuthModule],
+  imports: [LoggerModule, HealthzModule, AuthModule],
   controllers: [],
   providers: [
-    ObserveLogger,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

@@ -11,7 +11,7 @@ export class ObserveLogger extends Logger {
     super.error(message, trace, context);
   }
 
-  warn(message: string, context?: string):void {
+  warn(message: string, context?: string): void {
     // TO DO
     super.warn(message, context);
   }

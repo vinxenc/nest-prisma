@@ -17,7 +17,7 @@ async function bootstrap(): Promise<void> {
 
   await app.listen(3000, '0.0.0.0');
 
-  logger.log(`Application is runnong and listening port: ${env.PORT}`);
+  logger.log(`Running and listening port: ${env.PORT}`, 'Application');
 }
 
 bootstrap();
