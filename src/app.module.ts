@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { AllExceptionFilter, env } from '@common';
+import { AllExceptionFilter, BasicAuthMiddleware, env } from '@common';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { FastifyAdapter } from '@bull-board/fastify';
 import { HealthzModule } from './modules/healthz/healthz.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -18,6 +20,11 @@ import { QueueModule } from './modules/queue/queue.module';
         port: env.REDIS_PORT,
         password: env.REDIS_PASSWORD,
       },
+    }),
+    BullBoardModule.forRoot({
+      route: '/queues',
+      adapter: FastifyAdapter,
+      middleware: BasicAuthMiddleware,
     }),
     LoggerModule,
     HealthzModule,

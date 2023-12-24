@@ -68,15 +68,16 @@ export class StockPriceProcessor extends WorkerHost {
 
       browser = await puppeteer.launch({
         headless: 'new',
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
       });
       // Create a page
       const page = await browser.newPage();
 
       // Go to your site
       await page.goto(`https://24hmoney.vn/stock/${code}`);
-
+      await page.waitForSelector('.price-detail .price');
       const priceStr = await page.$eval('.price-detail .price', (el) => el.textContent);
-      this.logger.log(`${stockId} ${code} price: ${priceStr}`);
+      this.logger.log(`${stockId} ${code} price: ${priceStr}`, this.contextName);
       await browser.close();
 
       return await this.prismaService.stockPrice.upsert({
@@ -97,7 +98,9 @@ export class StockPriceProcessor extends WorkerHost {
       const message = isString(error) ? error : (error as Error).message;
       const stack = isString(error) ? (error as string) : (error as Error).stack;
       this.logger.error(`Process Crawl Price Stock Error: ${message}`, stack, this.contextName);
-      await browser.close();
+      if (browser) {
+        await browser.close();
+      }
       throw error;
     }
   }
