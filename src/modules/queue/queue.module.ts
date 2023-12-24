@@ -6,7 +6,6 @@ import { QueueName, QueueType, env } from '@common';
 import { ObserveLogger } from '@plugins';
 import { StockPriceProcessor, StockPriceQueueEvents } from './prcessors/stock-price.processor';
 import { LoggerModule } from '../logger/logger.module';
-import { jobOptions } from './queue.constant';
 
 @Module({
   imports: [
@@ -24,18 +23,26 @@ export class QueueModule implements OnModuleInit, OnApplicationShutdown {
   ) {}
 
   async onApplicationShutdown(signal: string): Promise<void> {
-    this.logger.warn(`Before Application Shutdown ${signal}`, QueueModule.name);
+    this.logger.warn(`On Application Shutdown ${signal}`, QueueModule.name);
     await this.stockPriceQueue.close();
     this.logger.warn(`Queue Closed`, QueueModule.name);
   }
 
   async onModuleInit(): Promise<void> {
+    const repeatableJobs = await this.stockPriceQueue.getRepeatableJobs();
+    await Promise.all(
+      repeatableJobs.map((repeatableJob) =>
+        this.stockPriceQueue.removeRepeatableByKey(repeatableJob.key),
+      ),
+    );
+
     await this.stockPriceQueue.add(
       QueueType.STOCK_PRICE_CRAWL,
       { code: null },
       {
         repeat: { pattern: env.STOCK_PRICE_CRAWL_REPEAT_PATTERN },
-        ...jobOptions,
+        removeOnComplete: true,
+        removeOnFail: true,
       },
     );
   }

@@ -12,9 +12,9 @@ import { Job, Queue } from 'bullmq';
 import { ObserveLogger } from '@plugins';
 import pick from 'lodash/pick';
 import isString from 'lodash/isString';
-import puppeteer from 'puppeteer';
+import puppeteer, { Browser } from 'puppeteer';
 import { Prisma } from '@prisma/client';
-import { jobOptions } from '../queue.constant';
+import { delay, jobOptions } from '../queue.constant';
 
 @Processor(QueueName.STOCK_PRICE_QUEUE)
 export class StockPriceProcessor extends WorkerHost {
@@ -29,39 +29,46 @@ export class StockPriceProcessor extends WorkerHost {
     this.contextName = StockPriceProcessor.name;
   }
 
-  private async processCrawlPriceStocks(): Promise<void> {
+  private async processCrawlPriceStocks(): Promise<number> {
     const stocks = await this.prismaService.stock.findMany();
 
-    const i = 1;
-    const stock = stocks[i];
-    await this.stockPriceQueue.add(
-      QueueType.STOCK_PRICE_CRAWL_DETAIL,
-      { code: stock.code, stockId: stock.id },
-      {
-        delay: 5000 * i,
-        ...jobOptions,
-      },
+    const promise = stocks.map((stock, i) =>
+      promise.push(
+        this.stockPriceQueue.add(
+          QueueType.STOCK_PRICE_CRAWL_DETAIL,
+          { code: stock.code, stockId: stock.id },
+          {
+            delay: delay * i,
+            ...jobOptions,
+          },
+        ),
+      ),
     );
-    // for (let i = 0; i < stocks.length; i++) {
-    //   const stock = stocks[i];
-    //   await this.stockPriceQueue.add(
-    //     QueueType.STOCK_PRICE_CRAWL_DETAIL,
-    //     { code: stock.code, stockId: stock.id },
-    //     {
-    //       delay: 5000 * i,
-    //       ...jobOptions,
-    //     },
-    //   );
-    // }
+
+    await Promise.all(promise);
+
+    return stocks.length;
   }
 
-  private async processCrawlPriceStock(stockId: number, code: string): Promise<void> {
-    const browser = await puppeteer.launch({ headless: 'new' });
+  private async processCrawlPriceStock(
+    stockId: number,
+    code: string,
+  ): Promise<{
+    id: number;
+    stockId: number;
+    price: number;
+    date: Date;
+  }> {
+    let browser: Browser;
+
     try {
       if (!stockId) {
         return;
       }
 
+      browser = await puppeteer.launch({
+        headless: 'new',
+      });
       // Create a page
       const page = await browser.newPage();
 
@@ -69,8 +76,9 @@ export class StockPriceProcessor extends WorkerHost {
       await page.goto(`https://24hmoney.vn/stock/${code}`);
 
       const priceStr = await page.$eval('.price-detail .price', (el) => el.textContent);
+      await browser.close();
 
-      await this.prismaService.stockPrice.upsert({
+      return await this.prismaService.stockPrice.upsert({
         where: {
           stockId_date: {
             stockId,
@@ -88,13 +96,12 @@ export class StockPriceProcessor extends WorkerHost {
       const message = isString(error) ? error : (error as Error).message;
       const stack = isString(error) ? (error as string) : (error as Error).stack;
       this.logger.error(`Process Crawl Price Stock Error: ${message}`, stack, this.contextName);
-      throw error;
-    } finally {
       await browser.close();
+      throw error;
     }
   }
 
-  async process(job: Job<{ stockId: number; code: string }, null, QueueType>): Promise<void> {
+  async process(job: Job<{ stockId: number; code: string }, null, QueueType>): Promise<any> {
     this.logger.log(
       `Process job: ${JSON.stringify(pick(job, ['id', 'name', 'data']))}`,
       this.contextName,
@@ -102,21 +109,20 @@ export class StockPriceProcessor extends WorkerHost {
 
     switch (job.name) {
       case QueueType.STOCK_PRICE_CRAWL: {
-        await this.processCrawlPriceStocks();
-        break;
+        return this.processCrawlPriceStocks();
       }
 
       case QueueType.STOCK_PRICE_CRAWL_DETAIL: {
         const { stockId, code } = job.data;
-        await this.processCrawlPriceStock(stockId, code);
-        break;
+        return this.processCrawlPriceStock(stockId, code);
       }
 
       default: {
         this.logger.log('job name not support', this.contextName);
-        break;
       }
     }
+
+    return 0;
   }
 
   // @OnWorkerEvent('completed')
