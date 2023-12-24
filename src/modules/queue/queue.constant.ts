@@ -9,9 +9,11 @@ export const jobOptions: JobsOptions = {
     age: 3600 * 24 * 30,
     count: 10000,
   },
-  attempts: 3,
+  attempts: 10,
   backoff: {
     type: 'exponential',
     delay: 1000,
   },
 };
+
+export const delay: number = 10000;
