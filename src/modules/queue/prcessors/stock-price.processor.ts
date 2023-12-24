@@ -1,4 +1,5 @@
 import { QueueName, QueueType } from '@common';
+import { PromisePool } from '@supercharge/promise-pool'
 import {
   QueueEventsListener,
   QueueEventsHost,
@@ -32,20 +33,17 @@ export class StockPriceProcessor extends WorkerHost {
   private async processCrawlPriceStocks(): Promise<number> {
     const stocks = await this.prismaService.stock.findMany();
 
-    const promise = stocks.map((stock, i) =>
-      promise.push(
-        this.stockPriceQueue.add(
-          QueueType.STOCK_PRICE_CRAWL_DETAIL,
-          { code: stock.code, stockId: stock.id },
-          {
-            delay: delay * i,
-            ...jobOptions,
-          },
-        ),
-      ),
-    );
-
-    await Promise.all(promise);
+    await PromisePool
+      .withConcurrency(20)
+      .for(stocks)
+      .process((stock, i) => this.stockPriceQueue.add(
+        QueueType.STOCK_PRICE_CRAWL_DETAIL,
+        { code: stock.code, stockId: stock.id },
+        {
+          delay: delay * i,
+          ...jobOptions,
+        },
+      ));
 
     return stocks.length;
   }
