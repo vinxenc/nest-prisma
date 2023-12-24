@@ -23,7 +23,7 @@ COPY --from=build /usr/src/app/dist ./dist
 
 RUN apt-get update -y && \
   apt-get install -y openssl && \
-  apt-get install -y chromium-browser && \
+  apt-get install -y chromium-driver && \
   apt-get clean --dry-run
 
 RUN npm cache clean --force && \
