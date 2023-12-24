@@ -14,6 +14,11 @@ env:
   NODE_ENV: test
   DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?shema=public
   JWT_SECRET_KEY: dev-jwt-secret-key
+  REDIS_HOST: localhost
+  REDIS_PORT: 6379
+  REDIS_USERNAME: default
+  REDIS_PASSWORD: devNestPrismaRedisPass
+  STOCK_PRICE_CRAWL_REPEAT_PATTERN: '0 16 * * 1-5'
 
 jobs:
   build:
@@ -42,3 +47,7 @@ jobs:
         NODE_ENV: ${{ env.NODE_ENV }}
         DATABASE_URL: ${{ env.DATABASE_URL }}
         JWT_SECRET_KEY: ${{ env.JWT_SECRET_KEY }}
+        REDIS_HOST: ${{ env.REDIS_HOST }}
+        REDIS_PORT: ${{ env.REDIS_PORT }}
+        REDIS_USERNAME: ${{ env.REDIS_USERNAME }}
+        REDIS_PASSWORD: ${{ env.REDIS_PASSWORD }}
