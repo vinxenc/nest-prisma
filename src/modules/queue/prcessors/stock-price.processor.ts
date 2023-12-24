@@ -76,6 +76,7 @@ export class StockPriceProcessor extends WorkerHost {
       await page.goto(`https://24hmoney.vn/stock/${code}`);
 
       const priceStr = await page.$eval('.price-detail .price', (el) => el.textContent);
+      this.logger.log(`${stockId} ${code} price: ${priceStr}`);
       await browser.close();
 
       return await this.prismaService.stockPrice.upsert({
