@@ -9,9 +9,9 @@ import { AppModule } from '../../../app.module';
 
 describe('HealthzController', () => {
   let healthzController: HealthzController;
-
+  let app: TestingModule
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+    app = await Test.createTestingModule({
       imports: [AppModule, TerminusModule],
       controllers: [HealthzController],
       providers: [PrismaService],
@@ -21,6 +21,10 @@ describe('HealthzController', () => {
       .compile();
 
     healthzController = app.get<HealthzController>(HealthzController);
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   describe('/healthz (GET)', () => {

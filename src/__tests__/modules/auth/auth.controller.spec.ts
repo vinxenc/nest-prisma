@@ -46,7 +46,7 @@ describe('AuthController', () => {
   });
 
   afterAll(async () => {
-    app.close();
+    await app.close();
   });
 
   afterEach(async () => {

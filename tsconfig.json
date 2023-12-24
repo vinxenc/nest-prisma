@@ -17,9 +17,11 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
     "paths": {
       "@services": ["src/services"],
-      "@common": ["src/common"]
+      "@common": ["src/common"],
+      "@plugins": ["src/plugins"]
     }
   }
 }

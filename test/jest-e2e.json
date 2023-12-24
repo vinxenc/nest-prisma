@@ -17,6 +17,7 @@
   "roots": ["<rootDir>/"],
   "moduleNameMapper": {
     "^@services(.*)$": "<rootDir>/src/services/$1",
-    "^@common(.*)$": "<rootDir>/src/common/$1"
+    "^@common(.*)$": "<rootDir>/src/common/$1",
+    "^@plugins(.*)$": "<rootDir>/plugins/$1"
   }
 }
