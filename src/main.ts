@@ -14,6 +14,10 @@ async function bootstrap(): Promise<void> {
   });
 
   app.useGlobalPipes(new ValidationPipe());
+  // Starts listening for shutdown hooks
+  app.enableShutdownHooks();
+
+  // setupGracefulShutdown({ app });
 
   await app.listen(3000, '0.0.0.0');
 
