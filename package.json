@@ -25,6 +25,9 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
+    "@bull-board/api": "^5.10.2",
+    "@bull-board/fastify": "^5.10.2",
+    "@bull-board/nestjs": "^5.10.2",
     "@nestjs/bullmq": "^10.0.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
