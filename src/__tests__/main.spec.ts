@@ -27,7 +27,7 @@ describe('HealthzController', () => {
   });
 
   afterAll(async () => {
-    app.close();
+    await app.close();
   });
 
   describe('/healthz (GET)', () => {

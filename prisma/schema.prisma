@@ -19,3 +19,21 @@ model User {
   email    String @unique @db.VarChar(55)
   password String
 }
+
+model Stock {
+  id          Int          @id @default(autoincrement())
+  code        String       @unique @db.VarChar(25)
+  groupCode   String       @db.VarChar(10)
+  companyName String       @db.VarChar(255)
+  stockPrices StockPrice[]
+}
+
+model StockPrice {
+  id      Int   @id @default(autoincrement())
+  stockId Int   @db.Integer
+  price   Float @db.Real
+  date    DateTime @db.Date
+  stock   Stock @relation(fields: [stockId], references: [id])
+  
+  @@unique([stockId, date(sort: Desc)])
+}
