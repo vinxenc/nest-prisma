@@ -75,7 +75,7 @@ export class StockPriceProcessor extends WorkerHost {
 
       // Go to your site
       await page.goto(`https://24hmoney.vn/stock/${code}`);
-
+      await page.waitForSelector('.price-detail .price');
       const priceStr = await page.$eval('.price-detail .price', (el) => el.textContent);
       this.logger.log(`${stockId} ${code} price: ${priceStr}`, this.contextName);
       await browser.close();

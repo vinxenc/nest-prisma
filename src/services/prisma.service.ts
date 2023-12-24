@@ -12,7 +12,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnAppli
   }
 
   async onApplicationShutdown(signal: string): Promise<void> {
-    this.logger.warn(`Before Application Shutdown ${signal}`, this.context);
+    this.logger.warn(`On Application Shutdown ${signal}`, this.context);
     await this.$disconnect();
     this.logger.warn(`Prisma $disconnect`, this.context);
   }
