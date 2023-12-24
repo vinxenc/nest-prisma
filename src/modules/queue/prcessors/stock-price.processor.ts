@@ -141,7 +141,7 @@ export class StockPriceQueueEvents extends QueueEventsHost {
 
   @OnQueueEvent('failed')
   onFailed(job: { jobId: string; failedReason: string }): void {
-    this.logger.log(`job failed: ${JSON.stringify(job)} `, this.contextName);
+    this.logger.error(`job failed: ${JSON.stringify(job)} `, job.failedReason, this.contextName);
   }
 
   @OnQueueEvent('progress')
