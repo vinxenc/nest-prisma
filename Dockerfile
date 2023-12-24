@@ -29,6 +29,7 @@ RUN npm cache clean --force && \
   yarn cache clean
 
 RUN sh ./prune.sh
+RUN node node_modules/puppeteer/install.mjs
 
 EXPOSE 3000
 

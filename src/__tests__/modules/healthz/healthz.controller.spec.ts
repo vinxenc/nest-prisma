@@ -9,7 +9,7 @@ import { AppModule } from '../../../app.module';
 
 describe('HealthzController', () => {
   let healthzController: HealthzController;
-  let app: TestingModule
+  let app: TestingModule;
   beforeEach(async () => {
     app = await Test.createTestingModule({
       imports: [AppModule, TerminusModule],
