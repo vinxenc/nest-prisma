@@ -4,10 +4,10 @@ import { BullModule, InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { QueueName, QueueType, env } from '@common';
 import { ObserveLogger } from '@plugins';
-import { BullBoardModule } from '@bull-board/nestjs';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { StockPriceProcessor, StockPriceQueueEvents } from './prcessors/stock-price.processor';
 import { LoggerModule } from '../logger/logger.module';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { LoggerModule } from '../logger/logger.module';
     }),
     BullBoardModule.forFeature({
       name: QueueName.STOCK_PRICE_QUEUE,
-      adapter: BullMQAdapter, // or use BullAdapter if you're using bull instead of bullMQ
+      adapter: BullMQAdapter, //or use BullAdapter if you're using bull instead of bullMQ
     }),
     LoggerModule,
   ],
@@ -36,7 +36,7 @@ export class QueueModule implements OnModuleInit, OnApplicationShutdown {
 
   async onModuleInit(): Promise<void> {
     const repeatableJobs = await this.stockPriceQueue.getRepeatableJobs();
-
+    
     await Promise.all(
       repeatableJobs.map((repeatableJob) =>
         this.stockPriceQueue.removeRepeatableByKey(repeatableJob.key),
