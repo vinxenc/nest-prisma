@@ -6,9 +6,9 @@ import { Queue } from 'bullmq';
 
 import { PrismaClient } from '@prisma/client';
 import { mockDeep, mock } from 'jest-mock-extended';
+import { QueueName } from '@common';
 import { HealthzController } from '../../../modules/healthz/healthz.controller';
 import { AppModule } from '../../../app.module';
-import { QueueName } from '@common';
 
 describe('HealthzController', () => {
   let healthzController: HealthzController;
