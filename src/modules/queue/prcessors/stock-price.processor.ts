@@ -1,5 +1,5 @@
 import { QueueName, QueueType } from '@common';
-import { PromisePool } from '@supercharge/promise-pool'
+import { PromisePool } from '@supercharge/promise-pool';
 import {
   QueueEventsListener,
   QueueEventsHost,
@@ -33,17 +33,18 @@ export class StockPriceProcessor extends WorkerHost {
   private async processCrawlPriceStocks(): Promise<number> {
     const stocks = await this.prismaService.stock.findMany();
 
-    await PromisePool
-      .withConcurrency(20)
+    await PromisePool.withConcurrency(20)
       .for(stocks)
-      .process((stock, i) => this.stockPriceQueue.add(
-        QueueType.STOCK_PRICE_CRAWL_DETAIL,
-        { code: stock.code, stockId: stock.id },
-        {
-          delay: delay * i,
-          ...jobOptions,
-        },
-      ));
+      .process((stock, i) =>
+        this.stockPriceQueue.add(
+          QueueType.STOCK_PRICE_CRAWL_DETAIL,
+          { code: stock.code, stockId: stock.id },
+          {
+            delay: delay * i,
+            ...jobOptions,
+          },
+        ),
+      );
 
     return stocks.length;
   }
@@ -72,7 +73,10 @@ export class StockPriceProcessor extends WorkerHost {
       const page = await browser.newPage();
 
       // Go to your site
-      await page.goto(`https://24hmoney.vn/stock/${code}`);
+      await page.goto(`https://24hmoney.vn/stock/${code}`, {
+        waitUntil: ['domcontentloaded', 'networkidle2'],
+      });
+
       await page.waitForSelector('.price-detail .price');
       const priceStr = await page.$eval('.price-detail .price', (el) => el.textContent);
       this.logger.log(`${stockId} ${code} price: ${priceStr}`, this.contextName);
