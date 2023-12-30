@@ -25,7 +25,7 @@ export class Money24hService {
     try {
       browser = await puppeteer.launch({
         headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-features=site-per-process'],
       });
       const page = await browser.newPage();
 
