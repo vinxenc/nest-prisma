@@ -1,3 +1,5 @@
+import { fork } from 'node:child_process';
+import * as path from 'path';
 import { QueueName, QueueType } from '@common';
 import { PromisePool } from '@supercharge/promise-pool';
 import {
@@ -12,8 +14,6 @@ import { PrismaService } from '@services';
 import { Job, Queue } from 'bullmq';
 import { ObserveLogger } from '@plugins';
 import pick from 'lodash/pick';
-import isString from 'lodash/isString';
-import puppeteer, { Browser } from 'puppeteer';
 import { Prisma } from '@prisma/client';
 import { delay, jobOptions } from '../queue.constant';
 
@@ -49,6 +49,24 @@ export class StockPriceProcessor extends WorkerHost {
     return stocks.length;
   }
 
+  private getPrice(code: string): Promise<number> {
+    const processPath = path.resolve(__dirname + '../../../../child-processor/stock-price.processor');
+    const child = fork(processPath);
+
+    return new Promise((resolve, reject) => {
+      child.on('message', (result: number) => {
+        child.kill('SIGINT');
+        resolve(result);
+      });
+
+      child.on('error', (error: Error) => {
+        reject(error)
+      });
+
+      child.send(code);
+    });
+  }
+
   private async processCrawlPriceStock(
     stockId: number,
     code: string,
@@ -58,53 +76,26 @@ export class StockPriceProcessor extends WorkerHost {
     price: number;
     date: Date;
   }> {
-    let browser: Browser;
+    const price = await this.getPrice(code);
 
-    try {
-      if (!stockId) {
-        return;
+    this.logger.log(`${stockId} ${code} price: ${price}`, this.contextName);
+    const where = {
+      stockId_date: {
+        stockId,
+        date: new Date(),
       }
+    };
+    const data = {
+      stockId,
+      price: new Prisma.Decimal(price).toNumber(),
+      date: new Date(),
+    };
 
-      browser = await puppeteer.launch({
-        headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      });
-      // Create a page
-      const page = await browser.newPage();
-
-      // Go to your site
-      await page.goto(`https://24hmoney.vn/stock/${code}`, {
-        waitUntil: ['domcontentloaded', 'networkidle2'],
-      });
-
-      await page.waitForSelector('.price-detail .price');
-      const priceStr = await page.$eval('.price-detail .price', (el) => el.textContent);
-      this.logger.log(`${stockId} ${code} price: ${priceStr}`, this.contextName);
-      await browser.close();
-
-      return await this.prismaService.stockPrice.upsert({
-        where: {
-          stockId_date: {
-            stockId,
-            date: new Date(),
-          },
-        },
-        update: {},
-        create: {
-          stockId,
-          price: new Prisma.Decimal(priceStr).toNumber(),
-          date: new Date(),
-        },
-      });
-    } catch (error: unknown) {
-      const message = isString(error) ? error : (error as Error).message;
-      const stack = isString(error) ? (error as string) : (error as Error).stack;
-      this.logger.error(`Process Crawl Price Stock Error: ${message}`, stack, this.contextName);
-      if (browser) {
-        await browser.close();
-      }
-      throw error;
-    }
+    return await this.prismaService.stockPrice.upsert({
+      where,
+      update: data,
+      create: data,
+    });
   }
 
   async process(job: Job<{ stockId: number; code: string }, null, QueueType>): Promise<any> {
