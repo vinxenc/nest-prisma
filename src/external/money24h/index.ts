@@ -1,14 +1,19 @@
-import { ObserveLogger } from '../../plugins';
 import puppeteer, { Browser } from 'puppeteer';
+import { ObserveLogger } from '../../plugins';
 
 export class Money24hService {
   private contextName: string;
+
   private code: string;
+
   private domain: string = 'https://24hmoney.vn';
+
   private stockPage: string = 'stock';
+
   private priceSelector: string = '.price-detail .price';
+
   private logger: ObserveLogger;
-  
+
   public constructor(code: string) {
     this.code = code;
     this.contextName = Money24hService.name;
@@ -36,12 +41,11 @@ export class Money24hService {
       this.logger.log(`${this.code} price: ${priceStr}`, this.contextName);
 
       return Number(priceStr);
-
     } catch (error: unknown) {
       const err = error as Error;
       this.logger.error(err.message, err.stack, Money24hService.name);
     } finally {
       await browser.close();
     }
-  } 
+  }
 }

@@ -50,7 +50,9 @@ export class StockPriceProcessor extends WorkerHost {
   }
 
   private getPrice(code: string): Promise<number> {
-    const processPath = path.resolve(__dirname + '../../../../child-processor/stock-price.processor');
+    const processPath = path.resolve(
+      `${__dirname}../../../../child-processor/stock-price.processor`,
+    );
     const child = fork(processPath);
 
     return new Promise((resolve, reject) => {
@@ -60,7 +62,7 @@ export class StockPriceProcessor extends WorkerHost {
       });
 
       child.on('error', (error: Error) => {
-        reject(error)
+        reject(error);
       });
 
       child.send(code);
@@ -83,7 +85,7 @@ export class StockPriceProcessor extends WorkerHost {
       stockId_date: {
         stockId,
         date: new Date(),
-      }
+      },
     };
     const data = {
       stockId,
@@ -91,7 +93,7 @@ export class StockPriceProcessor extends WorkerHost {
       date: new Date(),
     };
 
-    return await this.prismaService.stockPrice.upsert({
+    return this.prismaService.stockPrice.upsert({
       where,
       update: data,
       create: data,

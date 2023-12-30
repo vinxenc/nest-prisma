@@ -36,7 +36,7 @@ export class QueueModule implements OnModuleInit, OnApplicationShutdown {
 
   async onModuleInit(): Promise<void> {
     const repeatableJobs = await this.stockPriceQueue.getRepeatableJobs();
-    
+
     await Promise.all(
       repeatableJobs.map((repeatableJob) =>
         this.stockPriceQueue.removeRepeatableByKey(repeatableJob.key),
