@@ -57,7 +57,7 @@ export class StockPriceProcessor extends WorkerHost {
 
     return new Promise((resolve, reject) => {
       child.on('message', (result: number) => {
-        child.kill('SIGINT');
+        // child.kill('SIGINT');
         resolve(result);
       });
 
