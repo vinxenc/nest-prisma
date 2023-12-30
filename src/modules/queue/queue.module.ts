@@ -6,7 +6,7 @@ import { QueueName, QueueType, env } from '@common';
 import { ObserveLogger } from '@plugins';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { StockPriceProcessor, StockPriceQueueEvents } from './prcessors/stock-price.processor';
+import { StockPriceProcessor } from './prcessors/stock-price.processor';
 import { LoggerModule } from '../logger/logger.module';
 
 @Module({
@@ -20,7 +20,7 @@ import { LoggerModule } from '../logger/logger.module';
     }),
     LoggerModule,
   ],
-  providers: [PrismaService, StockPriceProcessor, StockPriceQueueEvents],
+  providers: [PrismaService, StockPriceProcessor],
 })
 export class QueueModule implements OnModuleInit, OnApplicationShutdown {
   constructor(
