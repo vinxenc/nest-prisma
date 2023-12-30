@@ -32,5 +32,7 @@ process.on('message', async (code: string) => {
   const result = await processor.getPrice(code);
   process.send(result);
 
-  process.kill(1);
+  process.kill(process.pid, 'SIGINT');
+
+  process.exit(0);
 });
