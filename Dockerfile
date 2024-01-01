@@ -1,4 +1,4 @@
-FROM node:20-slim As build
+FROM node:20.10.0-slim As build
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -14,7 +14,7 @@ ENV NODE_ENV production
 RUN yarn install --production
 RUN sh ./prune.sh
 
-FROM node:20-slim As production
+FROM node:20.10.0-slim As production
 
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/package.json ./package.json
@@ -39,4 +39,4 @@ RUN node node_modules/puppeteer/install.mjs
 
 EXPOSE 3000
 
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "--max-old-space-size=150 dist/main.js" ]
