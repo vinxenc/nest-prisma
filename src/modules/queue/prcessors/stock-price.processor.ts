@@ -34,6 +34,22 @@ export class StockPriceProcessor extends WorkerHost {
   }
 
   private async processCrawlPriceStocks(): Promise<number> {
+    const holidays = await this.cacheManager.wrap<string[]>(
+      CACHE_KEY_HOLIDAYS,
+      async () => {
+        const holidayRecords = await this.prismaService.holiday.findMany();
+
+        return holidayRecords.map((holiday) => holiday.date.toISOString());
+      },
+      CACHE_ONE_DAY_TTL,
+    );
+
+    const currentDay = dayjs.utc().startOf('day').toDate().toISOString();
+
+    if (holidays.includes(currentDay)) {
+      return 0;
+    }
+    
     const stocks = await this.prismaService.stock.findMany();
 
     await PromisePool.withConcurrency(20)
@@ -91,22 +107,6 @@ export class StockPriceProcessor extends WorkerHost {
       }
 
       case QueueType.STOCK_PRICE_CRAWL_DETAIL: {
-        const holidays = await this.cacheManager.wrap<string[]>(
-          CACHE_KEY_HOLIDAYS,
-          async () => {
-            const holidayRecords = await this.prismaService.holiday.findMany();
-
-            return holidayRecords.map((holiday) => holiday.date.toISOString());
-          },
-          CACHE_ONE_DAY_TTL,
-        );
-
-        const currentDay = dayjs.utc().startOf('day').toDate().toISOString();
-
-        if (holidays.includes(currentDay)) {
-          return 0;
-        }
-
         const { stockId, code } = job.data;
         const res = await this.processCrawlPriceStock(stockId, code);
         return res?.price;
