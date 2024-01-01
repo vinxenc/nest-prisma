@@ -1,5 +1,5 @@
 import puppeteer, { Browser } from 'puppeteer';
-import { ObserveLogger } from '../../plugins';
+import { ObserveLogger } from '@plugins/logger';
 
 export class Money24hService {
   private contextName: string;

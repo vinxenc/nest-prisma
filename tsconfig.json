@@ -19,9 +19,10 @@
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
     "paths": {
-      "@services": ["src/services"],
-      "@common": ["src/common"],
-      "@plugins": ["src/plugins"]
+      "@modules/*": ["src/modules/*"],
+      "@external/*": ["src/external/*"],
+      "@common/*": ["src/common/*"],
+      "@plugins/*": ["src/plugins/*"]
     }
   }
 }

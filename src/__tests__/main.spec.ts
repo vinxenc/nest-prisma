@@ -1,11 +1,11 @@
 import request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '@services';
 
 import { PrismaClient } from '@prisma/client';
 import { mockDeep } from 'jest-mock-extended';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { INestApplication } from '@nestjs/common';
+import { PrismaService } from '@modules/prisma/prisma.service';
 import { HealthzModule } from '../modules/healthz/healthz.module';
 
 describe('HealthzController', () => {

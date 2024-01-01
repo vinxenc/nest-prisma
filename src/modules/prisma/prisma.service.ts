@@ -1,8 +1,8 @@
-import { Injectable, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown, OnModuleInit, Scope } from '@nestjs/common';
+import { ObserveLogger } from '@plugins/logger';
 import { PrismaClient } from '@prisma/client';
-import { ObserveLogger } from '../plugins/logger';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class PrismaService extends PrismaClient implements OnModuleInit, OnApplicationShutdown {
   private context: string;
 

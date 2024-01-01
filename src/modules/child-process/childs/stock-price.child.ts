@@ -1,5 +1,5 @@
-import { ObserveLogger } from '../plugins';
-import { Money24hService } from '../external';
+import { ObserveLogger } from '@plugins/logger';
+import { Money24hService } from '@external/money24h';
 
 export class StockPriceProcessor {
   private context: string;
