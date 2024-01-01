@@ -49,7 +49,7 @@ export class StockPriceProcessor extends WorkerHost {
     if (holidays.includes(currentDay)) {
       return 0;
     }
-    
+
     const stocks = await this.prismaService.stock.findMany();
 
     await PromisePool.withConcurrency(20)
