@@ -12,12 +12,13 @@ RUN yarn run build
 ENV NODE_ENV production
 
 RUN yarn install --production
+RUN sh ./prune.sh
 
 FROM node:20-slim As production
 
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/package.json ./package.json
-COPY --from=build /usr/src/app/prune.sh ./prune.sh
+# COPY --from=build /usr/src/app/prune.sh ./prune.sh
 # COPY --from=build /usr/src/app/.env ./.env
 COPY --from=build /usr/src/app/dist ./dist
 
@@ -34,7 +35,6 @@ RUN apt-get update -y && \
 RUN npm cache clean --force && \
   yarn cache clean
 
-RUN sh ./prune.sh
 RUN node node_modules/puppeteer/install.mjs
 
 EXPOSE 3000
