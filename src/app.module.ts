@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { AllExceptionFilter, BasicAuthMiddleware, env } from '@common';
+import { AllExceptionFilter } from '@common/filters';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { FastifyAdapter } from '@bull-board/fastify';
+import { env } from '@common/env';
+import { BasicAuthMiddleware } from '@common/middlewares';
 import { HealthzModule } from './modules/healthz/healthz.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -26,7 +28,6 @@ import { QueueModule } from './modules/queue/queue.module';
       adapter: FastifyAdapter,
       middleware: BasicAuthMiddleware,
     }),
-    LoggerModule,
     HealthzModule,
     AuthModule,
     // GracefulShutdownModule.forRoot({

@@ -1,4 +1,4 @@
-import { Public } from '@common';
+import { Public } from '@common/decorators';
 import { Controller, Get } from '@nestjs/common';
 import {
   HealthCheck,
@@ -6,7 +6,7 @@ import {
   HealthCheckService,
   PrismaHealthIndicator,
 } from '@nestjs/terminus';
-import { PrismaService } from '@services';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Controller('healthz')
 export class HealthzController {
@@ -19,7 +19,7 @@ export class HealthzController {
   @Public()
   @Get()
   @HealthCheck()
-  check(): Promise<HealthCheckResult> {
+  async check(): Promise<HealthCheckResult> {
     return this.health.check([
       () => this.prismaHealthIndicator.pingCheck('database', this.prismaService),
     ]);

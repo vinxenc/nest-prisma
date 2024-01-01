@@ -29,11 +29,16 @@ model Stock {
 }
 
 model StockPrice {
-  id      Int   @id @default(autoincrement())
-  stockId Int   @db.Integer
-  price   Float @db.Real
+  id      Int      @id @default(autoincrement())
+  stockId Int      @db.Integer
+  price   Float    @db.Real
   date    DateTime @db.Date
-  stock   Stock @relation(fields: [stockId], references: [id])
-  
+  stock   Stock    @relation(fields: [stockId], references: [id])
+
   @@unique([stockId, date(sort: Desc)])
+}
+
+model Holiday {
+  id   Int      @id @default(autoincrement())
+  date DateTime @unique @db.Date
 }

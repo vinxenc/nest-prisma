@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { env } from '@common';
+import { env } from '@common/env';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { ObserveLogger } from './plugins/logger';
