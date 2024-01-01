@@ -39,4 +39,4 @@ RUN node node_modules/puppeteer/install.mjs
 
 EXPOSE 3000
 
-CMD [ "node", "--max-old-space-size=150 dist/main.js" ]
+CMD [ "node", "--max-old-space-size=150", "dist/main.js" ]
