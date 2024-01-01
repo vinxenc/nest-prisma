@@ -1,5 +1,5 @@
 export enum QueueName {
-  STOCK_PRICE_QUEUE = 'stock-price-queue-local',
+  STOCK_PRICE_QUEUE = 'stock-price-queue',
 }
 
 export enum QueueType {
