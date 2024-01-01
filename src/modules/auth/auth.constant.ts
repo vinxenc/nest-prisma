@@ -1,4 +1,4 @@
-import { env } from '@common';
+import { env } from '@common/env';
 
 export const saltRounds = 12;
 export const expiresIn = 60 * 1000 * 30;

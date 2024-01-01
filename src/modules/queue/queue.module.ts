@@ -1,16 +1,23 @@
 import { Module, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
-import { PrismaService } from '@services';
 import { BullModule, InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { QueueName, QueueType, env } from '@common';
-import { ObserveLogger } from '@plugins';
+import { QueueName, QueueType } from '@common/constants';
+import { ObserveLogger } from '@plugins/logger';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { StockPriceProcessor } from './prcessors/stock-price.processor';
-import { LoggerModule } from '../logger/logger.module';
+import { CacheModule } from '@modules/cache/cache.module';
+import { env } from 'process';
+import { PrismaModule } from '@modules/prisma/prisma.module';
+import { LoggerModule } from '@modules/logger/logger.module';
+import { ChildProcessModule } from '@modules/child-process/child-process.module';
+import { StockPriceProcessor } from './prcessors';
 
 @Module({
   imports: [
+    CacheModule,
+    PrismaModule,
+    LoggerModule,
+    ChildProcessModule,
     BullModule.registerQueue({
       name: QueueName.STOCK_PRICE_QUEUE,
     }),
@@ -18,9 +25,8 @@ import { LoggerModule } from '../logger/logger.module';
       name: QueueName.STOCK_PRICE_QUEUE,
       adapter: BullMQAdapter, // or use BullAdapter if you're using bull instead of bullMQ
     }),
-    LoggerModule,
   ],
-  providers: [PrismaService, StockPriceProcessor],
+  providers: [StockPriceProcessor],
 })
 export class QueueModule implements OnModuleInit, OnApplicationShutdown {
   constructor(

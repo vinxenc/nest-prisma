@@ -2,13 +2,13 @@ import request from 'supertest';
 import * as bcrypt from 'bcrypt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
-import { PrismaService } from '@services';
 import { PrismaClient } from '@prisma/client';
 import { mockDeep } from 'jest-mock-extended';
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from '@common';
+import { JwtAuthGuard } from '@common/guards';
+import { PrismaService } from '@modules/prisma/prisma.service';
 import { expiresIn, saltRounds } from '../../../modules/auth/auth.constant';
 import { AuthModule } from '../../../modules/auth/auth.module';
 

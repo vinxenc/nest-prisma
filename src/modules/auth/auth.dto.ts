@@ -1,4 +1,4 @@
-import { STRING_LENGTH_55 } from '@common';
+import { STRING_LENGTH_55 } from '@common/constants';
 import { Exclude } from 'class-transformer';
 import { IsString, MaxLength, IsEmail, IsNotEmpty } from 'class-validator';
 

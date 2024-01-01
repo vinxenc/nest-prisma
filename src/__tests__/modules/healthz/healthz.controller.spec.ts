@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TerminusModule } from '@nestjs/terminus';
-import { PrismaService } from '@services';
 import { getQueueToken } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 
 import { PrismaClient } from '@prisma/client';
 import { mockDeep, mock } from 'jest-mock-extended';
-import { QueueName } from '@common';
+import { QueueName } from '@common/constants';
+import { PrismaService } from '@modules/prisma/prisma.service';
 import { HealthzController } from '../../../modules/healthz/healthz.controller';
 import { AppModule } from '../../../app.module';
 
